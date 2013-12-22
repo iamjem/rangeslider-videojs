@@ -961,6 +961,7 @@ videojs.ControlTimePanel.prototype.options_ = {
 	children: {
 		'ControlTimePanelLeft': {},
 		'ControlTimePanelRight': {},
+		'ControlTimePanelRecord': {},
 	}
 };
 
@@ -1056,4 +1057,50 @@ videojs.ControlTimePanelRight.prototype.onKeyDown = function(event) {
 videojs.ControlTimePanelRight.prototype.onKeyUp = function(event) {
 	this.rs._checkControlTime(1,this.el_.children,this.timeOld);
 };
+
+
+videojs.ControlTimePanelRecord = videojs.Component.extend({
+  /** @constructor */
+	init: function(player, options){
+		videojs.Component.call(this, player, options);
+    	this.times = { start: false, end: false};
+		this.onTimeupdate = vjs.bind(this, this.onTimeupdate);
+		//this.onClick = vjs.bind(this, this.onClick);
+		this.on('click', this.onClick);
+	}
+});
+
+videojs.ControlTimePanelRecord.prototype.getRS = function(){
+	return this.player_.rangeslider;
+};
+
+videojs.ControlTimePanelRecord.prototype.createEl = function(){
+	return videojs.Component.prototype.createEl.call(this, 'div', {
+		className: 'vjs-controltimepanel-record',
+		innerHTML: '<span></span>'
+	});
+};
+
+videojs.ControlTimePanelRecord.prototype.onClick = function(event) {
+	if (this.times.start === false) {
+		this.times.start = true;
+		this.player_.setValueSlider(this.player_.currentTime(), this.player_.currentTime() + 1);
+		this.player_.on('timeupdate', this.onTimeupdate);
+	}
+	else if (this.times.end === false) {
+		this.times.end = true;
+		this.player_.off('timeupdate', this.onTimeupdate);
+		this.player_.setValueSlider(this.player_.getValueSlider().start, this.player_.currentTime());
+	}
+	else {
+		// reset
+		this.times.start = this.times.end = false;
+		this.player_.setValueSlider(0, this.player_.duration());
+	}
+};
+
+videojs.ControlTimePanelRecord.prototype.onTimeupdate = function(event) {
+	this.player_.setValueSlider(this.player_.getValueSlider().start, this.player_.currentTime());
+};
+
 })();

@@ -15,6 +15,10 @@
     <!--Demo CSS-->
 	<link href="demo.css" rel="stylesheet">
 
+	<!-- tests -->
+	<script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+	<link href="http://code.jquery.com/qunit/qunit-1.12.0.css" rel="stylesheet">
+
   </head>
 
   <body style="margin:10px">
@@ -99,5 +103,10 @@
 		Start (seconds):<input type="text" value="2" id="Start">
 		End (seconds): <input type="text" value="5" id="End">
 	</div>
+
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	
+	<script src="src/tests.js"></script>
   </body>
 </html>
